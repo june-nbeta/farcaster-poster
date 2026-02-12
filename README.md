@@ -21,15 +21,7 @@ npm install
 npx tsx post.ts "your message here"
 ```
 
-## Create a Signer
-
-If you need a new signer:
-
-```bash
-node create-signer.js
-```
-
 ## Requirements
 
 - Neynar API key from https://dev.neynar.com
-- Approved Farcaster signer UUID
+- Approved Farcaster signer UUID (provided manually)
