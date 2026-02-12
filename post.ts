@@ -1,45 +1,45 @@
 import "dotenv/config";
-import { NeynarAPIClient } from "@neynar/nodejs-sdk";
 
-console.log("API Key:", process.env.NEYNAR_API_KEY?.slice(0, 8) + "...");
-console.log("Signer:", process.env.NEYNAR_SIGNER_UUID?.slice(0, 8) + "...");
+const API_KEY = process.env.NEYNAR_API_KEY;
+const SIGNER_UUID = process.env.NEYNAR_SIGNER_UUID;
 
-if (!process.env.NEYNAR_API_KEY) {
-  throw new Error("Missing NEYNAR_API_KEY");
-}
+console.log("API Key:", API_KEY?.slice(0, 8) + "...");
+console.log("Signer:", SIGNER_UUID?.slice(0, 8) + "...");
 
-if (!process.env.NEYNAR_SIGNER_UUID) {
-  throw new Error("Missing NEYNAR_SIGNER_UUID");
-}
-
-const neynar = new NeynarAPIClient({ apiKey: process.env.NEYNAR_API_KEY });
-
-async function postToFarcaster(text: string) {
-  console.log("\nSending cast...");
-  const res = await neynar.publishCast({
-    signerUuid: process.env.NEYNAR_SIGNER_UUID!,
-    text,
-  });
-  return res;
+if (!API_KEY || !SIGNER_UUID) {
+  console.error("Missing env vars");
+  process.exit(1);
 }
 
 const text = process.argv[2];
 if (!text) {
-  console.error("Usage: npx tsx post.ts 'your message'");
+  console.error("Usage: npx tsx post.ts 'message'");
   process.exit(1);
 }
 
-postToFarcaster(text)
-  .then(r => {
+fetch("https://api.neynar.com/v2/farcaster/cast", {
+  method: "POST",
+  headers: {
+    "accept": "application/json",
+    "api_key": API_KEY,
+    "content-type": "application/json",
+  },
+  body: JSON.stringify({
+    text: text.trim(),
+    signer_uuid: SIGNER_UUID,
+  }),
+})
+  .then(async res => {
+    const data = await res.json();
+    if (!res.ok) {
+      console.error("Error:", res.status, JSON.stringify(data, null, 2));
+      process.exit(1);
+    }
     console.log("Success!");
-    console.log("Hash:", r.cast.hash);
-    console.log("URL:", `https://warpcast.com/${r.cast.author.username}/${r.cast.hash.slice(0, 10)}`);
+    console.log("Hash:", data.cast.hash);
+    console.log("URL:", `https://warpcast.com/${data.cast.author.username}/${data.cast.hash.slice(0, 10)}`);
   })
   .catch(e => {
-    console.error("\nError:", e.message);
-    if (e.response) {
-      console.error("Status:", e.response.status);
-      console.error("Data:", JSON.stringify(e.response.data, null, 2));
-    }
+    console.error("Failed:", e.message);
     process.exit(1);
   });
