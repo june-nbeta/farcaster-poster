@@ -11,64 +11,40 @@ if (!API_KEY || !SIGNER_UUID) {
 
 const neynar = new NeynarAPIClient({ apiKey: API_KEY });
 
-// Taste profile criteria (simplified for automation)
-// In practice, this would be more sophisticated
-const LIKEWORTHY_KEYWORDS = [
-  "observation", "noticed", "pattern", "system", "process",
-  "craft", "building", "making", "quiet", "slow",
-  "ironic", "dry", "understated", "honest work"
-];
-
-const RED_FLAGS = [
-  "hustle", "grind", "crushing it", "blessed", "grateful for",
-  "!!!", "🔥🔥🔥", "💯💯💯"
-];
-
 async function likeCast(castHash: string) {
   try {
-    // First, fetch the cast to evaluate it
-    const castResponse = await neynar.fetchCast({
-      identifier: castHash,
-      type: "hash",
+    console.log(`Attempting to like cast: ${castHash}`);
+    
+    // Try to fetch cast info first
+    try {
+      const castResponse = await neynar.lookUpCastByHash({
+        hash: castHash,
+        type: "hash",
+      });
+      
+      const cast = castResponse.cast;
+      console.log(`Found cast by @${cast.author.username}: ${cast.text.slice(0, 80)}...`);
+    } catch (e: any) {
+      console.log(`Could not fetch cast details: ${e.message}`);
+      console.log("Proceeding with like anyway...");
+    }
+    
+    // Post the like
+    console.log("Posting like...");
+    const result = await neynar.publishReactionToCast({
+      signerUuid: SIGNER_UUID,
+      reactionType: "like",
+      castHash: castHash,
     });
     
-    const cast = castResponse.cast;
-    const text = cast.text.toLowerCase();
-    
-    console.log("Evaluating cast...");
-    console.log(`Text: ${cast.text.slice(0, 100)}${cast.text.length > 100 ? '...' : ''}`);
-    console.log(`Author: @${cast.author.username}`);
-    
-    // Check red flags
-    const hasRedFlag = RED_FLAGS.some(flag => text.includes(flag.toLowerCase()));
-    if (hasRedFlag) {
-      console.log("\nRed flag detected. Not liking.");
-      process.exit(0);
-    }
-    
-    // Check for like-worthy signals
-    const hasSignal = LIKEWORTHY_KEYWORDS.some(kw => text.includes(kw.toLowerCase()));
-    
-    if (!hasSignal) {
-      console.log("\nNo strong like-worthy signals detected.");
-      console.log("Manual review recommended.");
-      process.exit(0);
-    }
-    
-    console.log("\nLike-worthy signals found. Proceeding...\n");
-    
-    // Post the like (reaction)
-    // Note: Neynar SDK may have different method for reactions
-    // This is a placeholder - actual implementation depends on SDK capabilities
-    console.log("Like would be posted here.");
-    console.log("(Note: Actual like functionality requires reaction endpoint)");
-    
-    // For now, report that it passed the filter
-    console.log("\nCast passed taste filter. Ready to like.");
-    console.log("Cast Hash:", castHash);
+    console.log("Like posted successfully!");
+    console.log(`Result: ${JSON.stringify(result, null, 2)}`);
     
   } catch (error: any) {
-    console.error("Error evaluating/liking cast:", error.message);
+    console.error("Error liking cast:", error.message);
+    if (error.response) {
+      console.error("Response:", JSON.stringify(error.response.data, null, 2));
+    }
     process.exit(1);
   }
 }
