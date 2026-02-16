@@ -37,7 +37,7 @@ fetch("https://api.neynar.com/v2/farcaster/cast", {
     }
     console.log("Success!");
     console.log("Hash:", data.cast.hash);
-    console.log("URL:", `https://warpcast.com/${data.cast.author.username}/${data.cast.hash.slice(0, 10)}`);
+    console.log("URL:", `https://farcaster.xyz/${data.cast.author.username}/${data.cast.hash.slice(0, 10)}`);
   })
   .catch(e => {
     console.error("Failed:", e.message);

@@ -35,8 +35,8 @@ async function fetchCast(castHash: string) {
     console.error(JSON.stringify(data, null, 2));
     
     if (data.message?.includes("not found")) {
-      console.error("\nTip: Warpcast URLs often truncate hashes.");
-      console.error("Open the cast in Warpcast → Share → Copy Link to get the full hash.");
+      console.error("\nTip: Farcaster URLs often truncate hashes.");
+      console.error("Open the cast in Farcaster → Share → Copy Link to get the full hash.");
     }
     
     process.exit(1);

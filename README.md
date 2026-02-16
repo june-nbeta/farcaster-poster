@@ -27,10 +27,10 @@ npx tsx post.ts "your message here"
 npx tsx reply.ts <parent-cast-hash> "your reply"
 ```
 
-**Important:** Warpcast URLs often truncate hashes (showing only first 8-10 characters). You need the **full hash** to reply.
+**Important:** Farcaster URLs often truncate hashes (showing only first 8-10 characters). You need the **full hash** to reply.
 
 To get the full hash:
-1. Open the cast in Warpcast
+1. Open the cast in Farcaster
 2. Tap Share → Copy Link
 3. The full hash is in the URL after the username
 
@@ -73,7 +73,7 @@ npx tsx fetch-cast.ts <cast-hash>
 - Ensure no extra quotes or spaces
 
 **"signer not approved" error:**
-- Approve the signer in Warpcast first
+- Approve the signer in Farcaster first
 - Check signer status in Neynar dashboard
 
 ## API Reference
