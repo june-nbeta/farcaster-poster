@@ -39,6 +39,13 @@ Or use the fetch-cast script to verify a hash works:
 npx tsx fetch-cast.ts <cast-hash>
 ```
 
+### Resolve cast URL to full hash
+```bash
+npx tsx resolve-url.ts <farcaster-url>
+```
+
+This extracts the full hash from a shortened Farcaster URL so you can reply.
+
 ### Fetch a cast (verify hash)
 ```bash
 npx tsx fetch-cast.ts <cast-hash>
@@ -66,7 +73,7 @@ npx tsx fetch-cast.ts <cast-hash>
 
 **"cast not found" error:**
 - You're using a truncated hash from the URL
-- Get the full hash via Warpcast Share → Copy Link
+- Use `resolve-url.ts` to get the full hash: `npx tsx resolve-url.ts <farcaster-url>`
 
 **"Invalid OAuth token" error:**
 - Check your NEYNAR_API_KEY in .env
