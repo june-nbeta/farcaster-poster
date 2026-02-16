@@ -67,7 +67,7 @@ npx tsx fetch-cast.ts <cast-hash>
 - Neynar API key from https://dev.neynar.com
 - Approved Farcaster signer UUID
   - Generate at https://dev.neynar.com → Signers
-  - Approve in Warpcast when prompted
+  - Approve in Farcaster when prompted
 
 ## Troubleshooting
 
