@@ -1,12 +1,12 @@
 # Farcaster Poster
 
-CLI utility for Farcaster engagement via Neynar API.
+CLI utility for Farcaster engagement via Neynar API (Free Tier).
 
 ## Setup
 
 ```bash
 cp .env.example .env
-# Edit .env with your Neynar API key, signer UUID, and FID
+# Edit .env with your Neynar API key and signer UUID
 ```
 
 ## Install
@@ -22,23 +22,60 @@ npm install
 npx tsx post.ts "your message here"
 ```
 
-### Read replies (filter by Neynar score ≥0.85)
-```bash
-npx tsx read-replies.ts
-```
-
-### Reply to a cast (checks author score ≥0.85)
+### Reply to a cast
 ```bash
 npx tsx reply.ts <parent-cast-hash> "your reply"
 ```
 
-### Like a cast (uses taste profile)
+**Important:** Warpcast URLs often truncate hashes (showing only first 8-10 characters). You need the **full hash** to reply.
+
+To get the full hash:
+1. Open the cast in Warpcast
+2. Tap Share → Copy Link
+3. The full hash is in the URL after the username
+
+Or use the fetch-cast script to verify a hash works:
 ```bash
-npx tsx like.ts <cast-hash>
+npx tsx fetch-cast.ts <cast-hash>
 ```
+
+### Fetch a cast (verify hash)
+```bash
+npx tsx fetch-cast.ts <cast-hash>
+```
+
+## Free Tier Limitations
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Post cast | ✅ Works | 150 credits |
+| Reply to cast | ✅ Works | 150 credits |
+| Fetch cast | ✅ Works | 4 credits |
+| Get user feed | ✅ Works | 4 credits |
+| Like/recast | ❌ Paid only | Requires Neynar paid plan |
+| Read replies | ❌ Paid only | Requires Neynar paid plan |
 
 ## Requirements
 
 - Neynar API key from https://dev.neynar.com
-- Approved Farcaster signer UUID (provided manually)
-- Your Farcaster FID (for reading mentions)
+- Approved Farcaster signer UUID
+  - Generate at https://dev.neynar.com → Signers
+  - Approve in Warpcast when prompted
+
+## Troubleshooting
+
+**"cast not found" error:**
+- You're using a truncated hash from the URL
+- Get the full hash via Warpcast Share → Copy Link
+
+**"Invalid OAuth token" error:**
+- Check your NEYNAR_API_KEY in .env
+- Ensure no extra quotes or spaces
+
+**"signer not approved" error:**
+- Approve the signer in Warpcast first
+- Check signer status in Neynar dashboard
+
+## API Reference
+
+See `obsidian-vault/08_reference/farcaster-neynar-free.md` for complete free tier endpoint documentation.
